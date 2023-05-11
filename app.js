@@ -1,41 +1,30 @@
 const dgram = require('dgram');
 
-// Multicast configuration
-const multicastAddress = '239.255.255.250'; // Multicast group IP address
-const multicastPort = 5555; // Multicast group port
-const multicastTTL = 1; // Time-to-live value for multicast packets
+// import dgram from 'node:dgram'
+// address range
+//  224.0.0.0 to 239.255. 255.255
+const address = '224.0.0.0' // address which all of the member are listening to
+const port = 5554
 
-// Create a UDP socket for sending and receiving multicast data
-const socket = dgram.createSocket({ type: 'udp4', reuseAddr: true });
+let socket = dgram.createSocket({
+    type: 'udp4',
+    reuseAddr: true // for testing multiple instances on localhost
+})
 
-// Bind the socket to a port
-socket.bind(() => {
-    console.log(`Socket bound to port ${socket.address().port} with address: ${socket.address().address}`);
+socket.bind(port)
 
-    // Set the multicast TTL value
-    socket.setMulticastTTL(multicastTTL);
+socket.on('message', (msg, remote) => {
+    console.log(msg.toString().trim())
+})
 
-    // Join the multicast group
-    socket.addMembership(multicastAddress);
-});
+socket.on("listening", function () {
+    this.setBroadcast(true)
+    this.setMulticastTTL(128)
+    this.addMembership(address)
+    console.log('Multicast listening . . . ')
+})
 
-// Handle received messages
-socket.on('message', (message, remote) => {
-    console.log('Received message from ' + remote.address + ':' + remote.port);
-    console.log('Message content: ' + message.toString());
-});
-
-// Send a multicast message
-const sendMessage = (message) => {
-    socket.send(message, 0, message.length, multicastPort, multicastAddress, (err) => {
-        if (err) {
-            console.error('Error sending message:', err);
-        } else {
-            console.log('Message sent successfully.');
-        }
-    });
-};
-
-sendMessage('Hello, multicast!');
-
-// Usage: sendMessage('Hello, multicast!');
+setInterval(() => {
+    let message = 'Hi! ' + new Date().getTime()
+    socket.send(message, 0, message.length, port, address)
+}, 1000)

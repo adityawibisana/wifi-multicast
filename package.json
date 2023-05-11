@@ -1,0 +1,19 @@
+{
+  "name": "wifi-multicast",
+  "version": "1.0.0",
+  "description": "A POC for broadcasting and receiving data using wifi multicast",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adityawibisana/wifi-multicast.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adityawibisana/wifi-multicast/issues"
+  },
+  "homepage": "https://github.com/adityawibisana/wifi-multicast#readme"
+}
